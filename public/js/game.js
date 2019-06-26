@@ -1,8 +1,8 @@
 var config = {
   type: Phaser.AUTO,
   parent: 'phaser-example',
-  // width: 800,
-  // height: 600,
+  width: 800,
+  height: 600,
   physics: {
     default: 'arcade',
     arcade: {
@@ -21,6 +21,7 @@ var game = new Phaser.Game(config);
 
 function preload() {
   this.load.image('ship', 'assets/hero_origin.png');
+  this.load.image('otherPlayer', 'assets/hero_origin.png');
 }
 
 function create() {
@@ -46,14 +47,41 @@ function create() {
       }
     });
   });
+  this.cursors = this.input.keyboard.createCursorKeys();
 }
 
-function update() {}
 
+function update() {
+  if (this.ship) {
+    if (this.cursors.left.isDown) {
+      this.ship.setVelocityX(-160);
+    } else if (this.cursors.right.isDown) {
+      this.ship.setVelocityX(160);
+    } else {
+      this.ship.setVelocityX(0);
+    }
 
+    if (this.cursors.up.isDown) {
+      this.ship.setVelocityY(-160);
+    } else if (this.cursors.down.isDown) {
+      this.ship.setVelocityY(160);
+    } else {
+      this.ship.setVelocityY(0);
+    }
+
+    // if (this.cursors.up.isDown && this.ship.body.touching.down){
+    //   this.ship.setVelocityY(-330);
+    // }
+
+      // this.physics.world.wrap(this.ship, 5);
+
+  }
+}
+
+// Add me
 function addPlayer(self, playerInfo) {
   console.log('adding player');
-  self.ship = self.physics.add.image(playerInfo.x, playerInfo.y, 'ship').setOrigin(0.5, 0.5).setDisplaySize(40, 60);
+  self.ship = self.physics.add.image(playerInfo.x, playerInfo.y, 'ship').setOrigin(0.5, 0.8).setDisplaySize(40, 60);
   if (playerInfo.team === 'blue') {
     self.ship.setTint(0x0000ff);
   } else {
@@ -64,8 +92,9 @@ function addPlayer(self, playerInfo) {
   self.ship.setMaxVelocity(200);
 }
 
+// Distinct others from me
 function addOtherPlayers(self, playerInfo) {
-  const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+  const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(40, 60);
   if (playerInfo.team === 'blue') {
     otherPlayer.setTint(0x0000ff);
   } else {
